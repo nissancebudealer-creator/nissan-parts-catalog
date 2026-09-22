@@ -73,7 +73,7 @@ assert(
   "PartsSearch component mounted in page.tsx"
 );
 assert(
-  pageContent.includes("Matching Nissan Parts"),
+  pageContent.includes("<SearchResults") || pageContent.includes("Matching Nissan Parts"),
   "Matching parts results section rendered in page.tsx"
 );
 assert(

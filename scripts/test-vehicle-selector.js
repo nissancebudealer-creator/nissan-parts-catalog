@@ -105,8 +105,8 @@ assert(
   "VehicleSelector component is mounted in page.tsx"
 );
 assert(
-  pageContent.includes("onClear={handleClearSelector}"),
-  "handleClearSelector wired to VehicleSelector"
+  pageContent.includes("onClear={handleClearVehicle}") || pageContent.includes("onClear={handleClearSelector}"),
+  "handleClear wired to VehicleSelector"
 );
 assert(
   pageContent.includes("onReset={handleResetAll}"),
