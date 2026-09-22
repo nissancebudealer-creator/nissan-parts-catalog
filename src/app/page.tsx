@@ -5,6 +5,8 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { VehicleSelector } from "@/components/VehicleSelector";
 import { PartsSearch } from "@/components/PartsSearch";
+import { SearchResults } from "@/components/SearchResults";
+import { PartDetailModal } from "@/components/PartDetailModal";
 import {
   VehicleModelEntity,
   VehicleVariantEntity,
@@ -41,6 +43,10 @@ export default function HomePage() {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
 
+  // Part Detail Modal State (Phase 5: Steps 8 & 9)
+  const [selectedPartForModal, setSelectedPartForModal] = useState<PartCatalogItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   const handleScrollToSearch = () => {
     searchSectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -52,6 +58,8 @@ export default function HomePage() {
     setSearchResults(null);
     setLastSearchParams(null);
     setHasSearched(false);
+    setSelectedPartForModal(null);
+    setIsModalOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -83,7 +91,14 @@ export default function HomePage() {
     }, 100);
   };
 
-  const isVehicleReady = Boolean(selectedModel && selectedVariant && selectedYear);
+  const handleOpenPartModal = (part: PartCatalogItem) => {
+    setSelectedPartForModal(part);
+    setIsModalOpen(true);
+  };
+
+  const handleClosePartModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-red-600 selection:text-white">
@@ -133,128 +148,18 @@ export default function HomePage() {
             isSearching={isSearching}
           />
 
-          {/* SEARCH EXECUTION RESULTS SECTION (PHASE 4 ENGINE VALIDATION) */}
-          {hasSearched && (
-            <div
-              ref={resultsRef}
-              className="p-6 sm:p-8 rounded-2xl bg-slate-900/90 border border-slate-800 backdrop-blur-md shadow-2xl scroll-mt-24 animate-in fade-in duration-300"
-            >
-              {/* Results Meta Banner */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-800/80 gap-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-                      Search Completed &bull; Phase 4 Verified
-                    </span>
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight mt-1">
-                    Matching Nissan Parts ({searchResults?.length ?? 0})
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Filtered for{" "}
-                    <strong className="text-slate-200">
-                      Nissan {selectedModel?.model_name} &bull; {selectedVariant?.variant_name} &bull; Model Year {selectedYear?.year}
-                    </strong>
-                    {lastSearchParams?.query && (
-                      <span>
-                        {" "}
-                        &bull; Matching: &ldquo;
-                        <strong className="text-red-400">{lastSearchParams.query}</strong>
-                        &rdquo;
-                      </span>
-                    )}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-950 border border-slate-800 text-slate-300">
-                    Source: Normalized Database
-                  </span>
-                  <span className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                    100% Fitment Verified
-                  </span>
-                </div>
-              </div>
-
-              {/* Matching Parts List / Cards Preview */}
-              {searchResults && searchResults.length > 0 ? (
-                <div className="space-y-3">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {searchResults.map((part) => (
-                      <div
-                        key={part.id}
-                        className="p-5 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-red-500/40 transition-all group flex flex-col justify-between"
-                      >
-                        <div>
-                          {/* Part Category & Number */}
-                          <div className="flex items-center justify-between gap-2 mb-2">
-                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
-                              {part.category}
-                            </span>
-                            <span className="text-xs font-mono font-bold text-red-400 group-hover:text-red-300 transition-colors">
-                              {part.partNumber}
-                            </span>
-                          </div>
-
-                          {/* Part Description */}
-                          <h4 className="text-sm font-bold text-white leading-snug group-hover:text-red-100 transition-colors mb-2">
-                            {part.partDescription}
-                          </h4>
-
-                          {/* Fitment Notes */}
-                          <div className="text-[11px] text-slate-400 space-y-1 mb-4">
-                            <div className="flex items-center gap-1.5 text-slate-300">
-                              <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                              <span>Fits: Nissan {part.model} {part.variant} ({part.year})</span>
-                            </div>
-                            {part.position && (
-                              <div className="text-slate-500">
-                                Position: {part.position}
-                              </div>
-                            )}
-                            {part.remarks && (
-                              <div className="text-slate-500 italic">
-                                Note: {part.remarks}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Status Footer */}
-                        <div className="pt-3 border-t border-slate-900 flex items-center justify-between text-[11px]">
-                          <span className="text-emerald-400 font-medium flex items-center gap-1">
-                            <ShieldCheck className="w-3 h-3" />
-                            {part.genuineStatus}
-                          </span>
-                          <span className="text-slate-400 font-mono">
-                            {part.availability}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 text-xs text-slate-400 flex items-center justify-between">
-                    <span>
-                      Showing {searchResults.length} verified compatible parts. Advanced view options, table layout, and detail modal are ready for Phase 5.
-                    </span>
-                    <span className="font-mono text-[11px] text-red-400">
-                      PHASE 4 COMPLETE
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <div className="py-12 text-center">
-                  <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-3 text-slate-500">
-                    <Package className="w-6 h-6" />
-                  </div>
-                  <h4 className="text-base font-bold text-white">No Matching Parts Found</h4>
-                  <p className="text-xs text-slate-400 max-w-md mx-auto mt-1.5">
-                    No parts matched your exact search query for this vehicle configuration. Try searching for a broader term such as &ldquo;Brake&rdquo;, &ldquo;Filter&rdquo;, or &ldquo;Belt&rdquo;.
-                  </p>
-                </div>
-              )}
+          {/* SEARCH RESULTS & PART DETAILS (PHASE 5) */}
+          {hasSearched && searchResults !== null && (
+            <div ref={resultsRef} className="scroll-mt-24">
+              <SearchResults
+                parts={searchResults}
+                modelName={selectedModel?.model_name}
+                variantName={selectedVariant?.variant_name}
+                year={selectedYear?.year}
+                searchQuery={lastSearchParams?.query}
+                category={lastSearchParams?.category}
+                onSelectPart={handleOpenPartModal}
+              />
             </div>
           )}
 
@@ -264,23 +169,23 @@ export default function HomePage() {
             <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800 lg:col-span-2">
               <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
                 <Database className="w-4 h-4 text-blue-400" />
-                <span>Section 7: Search Logic & Relational Filtering</span>
+                <span>Section 5 & 18: Parts Catalog & Detail Success Loop</span>
               </h4>
               <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                The search query evaluates compatibility through the normalized relational database layer. When a vehicle is locked, parts compatibility tuples ensure that only parts engineered specifically for that Model, Variant, and Year are returned. Partial text matching is performed case-insensitively across descriptions, OEM numbers, categories, and subcategories.
+                The full 10-step customer journey is active: selecting Model, Variant, Year, entering Part Description, executing search, displaying Cards/Table views, opening comprehensive OEM Part Details in modal view, and returning cleanly to perform repeated searches.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                 <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800/80">
-                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">COMPATIBILITY MATRIX</div>
-                  <div className="text-white font-mono text-xs">Model &bull; Variant &bull; Year</div>
+                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">PRESENTATION MODES</div>
+                  <div className="text-white font-mono text-xs">Cards &amp; Dealership Table</div>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800/80">
-                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">SEARCH TYPE</div>
-                  <div className="text-white font-mono text-xs">Case-Insensitive Partial</div>
+                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">DETAIL MODAL</div>
+                  <div className="text-white font-mono text-xs">Full OEM Specifications</div>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800/80">
-                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">API ENDPOINT</div>
-                  <div className="text-white font-mono text-xs">/api/catalog/parts</div>
+                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">SEARCH ENGINE</div>
+                  <div className="text-white font-mono text-xs">Case-Insensitive &amp; Fast</div>
                 </div>
               </div>
             </div>
@@ -306,6 +211,13 @@ export default function HomePage() {
         </section>
       </main>
 
+      {/* Part Detail Modal (Phase 5) */}
+      <PartDetailModal
+        part={selectedPartForModal}
+        isOpen={isModalOpen}
+        onClose={handleClosePartModal}
+      />
+
       {/* Automotive Footer */}
       <footer className="border-t border-slate-800/80 bg-slate-950 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
@@ -313,7 +225,7 @@ export default function HomePage() {
             <span className="w-2 h-2 rounded-full bg-red-500" />
             <span className="font-bold text-slate-200">Nissan Automotive Parts Catalog</span>
             <span>&bull;</span>
-            <span>Phase 4 Complete: Parts Search Engine</span>
+            <span>Phase 5 Complete: Results &amp; Details</span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
