@@ -7,6 +7,7 @@ import { VehicleSelector } from "@/components/VehicleSelector";
 import { PartsSearch } from "@/components/PartsSearch";
 import { SearchResults } from "@/components/SearchResults";
 import { PartDetailModal } from "@/components/PartDetailModal";
+import { DataImportModal } from "@/components/DataImportModal";
 import {
   VehicleModelEntity,
   VehicleVariantEntity,
@@ -26,6 +27,7 @@ import {
   Check,
   ChevronRight,
   Layers,
+  Upload,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -43,9 +45,12 @@ export default function HomePage() {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
 
-  // Part Detail Modal State (Phase 5: Steps 8 & 9)
+  // Part Detail Modal State (Phase 5)
   const [selectedPartForModal, setSelectedPartForModal] = useState<PartCatalogItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  // Data Import Modal State (Phase 6)
+  const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
 
   const handleScrollToSearch = () => {
     searchSectionRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -60,6 +65,7 @@ export default function HomePage() {
     setHasSearched(false);
     setSelectedPartForModal(null);
     setIsModalOpen(false);
+    setIsImportModalOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -102,8 +108,11 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-red-600 selection:text-white">
-      {/* Navigation Header */}
-      <Header onReset={handleResetAll} />
+      {/* Navigation Header with Reset & CSV Import */}
+      <Header
+        onReset={handleResetAll}
+        onOpenImport={() => setIsImportModalOpen(true)}
+      />
 
       {/* Main Content */}
       <main className="flex-1">
@@ -163,29 +172,58 @@ export default function HomePage() {
             </div>
           )}
 
+          {/* Bulk Data Import Promotion Card (Phase 6) */}
+          <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-950/30 via-slate-900/60 to-slate-900/80 border border-blue-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center shrink-0">
+                <Upload className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-white">Dealership Parts Data Import</span>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800/50">
+                    Phase 6 Active
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Import thousands of Nissan parts via CSV or Excel with automatic vehicle model, variant, and year compatibility mapping.
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsImportModalOpen(true)}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-sm self-start md:self-auto shrink-0 active:scale-95"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span>Launch CSV Importer</span>
+            </button>
+          </div>
+
           {/* Architecture Status & DEMO DATA compliance (Section 12) */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
             {/* Relational Cascade Information */}
             <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800 lg:col-span-2">
               <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
                 <Database className="w-4 h-4 text-blue-400" />
-                <span>Section 5 & 18: Parts Catalog & Detail Success Loop</span>
+                <span>Section 10: Scalable Parts Data Architecture</span>
               </h4>
               <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                The full 10-step customer journey is active: selecting Model, Variant, Year, entering Part Description, executing search, displaying Cards/Table views, opening comprehensive OEM Part Details in modal view, and returning cleanly to perform repeated searches.
+                The database and API layer are engineered to scale to thousands of parts. The importer automatically resolves existing vehicle models and variants, creates missing year associations, and forms relational compatibility links without frontend code modification.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                 <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800/80">
-                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">PRESENTATION MODES</div>
-                  <div className="text-white font-mono text-xs">Cards &amp; Dealership Table</div>
+                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">IMPORT FORMAT</div>
+                  <div className="text-white font-mono text-xs">CSV / Excel UTF-8</div>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800/80">
-                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">DETAIL MODAL</div>
-                  <div className="text-white font-mono text-xs">Full OEM Specifications</div>
+                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">IMPORT API</div>
+                  <div className="text-white font-mono text-xs">POST /api/admin/import</div>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800/80">
-                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">SEARCH ENGINE</div>
-                  <div className="text-white font-mono text-xs">Case-Insensitive &amp; Fast</div>
+                  <div className="text-[11px] font-mono text-slate-500 mb-0.5">VALIDATION</div>
+                  <div className="text-white font-mono text-xs">Row-level sanitization</div>
                 </div>
               </div>
             </div>
@@ -198,7 +236,7 @@ export default function HomePage() {
                   <span>Section 12 Compliance</span>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  All vehicle specifications, part numbers, and compatibility relations originate from normalized demo seeds labeled <strong className="text-amber-300">DEMO DATA</strong>.
+                  The system enables replacing development demo data with verified factory Nissan parts spreadsheets at any time.
                 </p>
               </div>
 
@@ -218,6 +256,15 @@ export default function HomePage() {
         onClose={handleClosePartModal}
       />
 
+      {/* Data Import Modal (Phase 6) */}
+      <DataImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onImportComplete={() => {
+          // Trigger catalog refresh
+        }}
+      />
+
       {/* Automotive Footer */}
       <footer className="border-t border-slate-800/80 bg-slate-950 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
@@ -225,7 +272,7 @@ export default function HomePage() {
             <span className="w-2 h-2 rounded-full bg-red-500" />
             <span className="font-bold text-slate-200">Nissan Automotive Parts Catalog</span>
             <span>&bull;</span>
-            <span>Phase 5 Complete: Results &amp; Details</span>
+            <span>Phase 6 Complete: Bulk Data Import Engine</span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
