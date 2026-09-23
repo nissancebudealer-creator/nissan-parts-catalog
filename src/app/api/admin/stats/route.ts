@@ -5,6 +5,7 @@ import {
   VEHICLE_YEARS_DATA,
   PARTS_DATA,
   PART_COMPATIBILITY_DATA,
+  STAFF_USERS_DATA,
 } from "@/lib/db/mock-data";
 
 export async function GET() {
@@ -19,6 +20,8 @@ export async function GET() {
       activeParts: PARTS_DATA.filter((p) => p.active).length,
       totalCompatibilities: PART_COMPATIBILITY_DATA.length,
       activeCompatibilities: PART_COMPATIBILITY_DATA.filter((c) => c.active).length,
+      totalStaff: STAFF_USERS_DATA.length,
+      activeStaff: STAFF_USERS_DATA.filter((s) => s.active).length,
     };
 
     return NextResponse.json({

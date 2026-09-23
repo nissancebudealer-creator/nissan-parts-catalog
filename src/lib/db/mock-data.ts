@@ -10,6 +10,8 @@ import {
   VehicleYearEntity,
   PartEntity,
   PartCompatibilityEntity,
+  PartInquiryEntity,
+  StaffUserEntity,
 } from "@/types/catalog";
 
 // 1. VEHICLE MODELS (Normalized Master)
@@ -342,6 +344,7 @@ export const PART_COMPATIBILITY_DATA: PartCompatibilityEntity[] = [
   // Navara Pro-4X Brake Pads (D1060-4KH0A)
   { id: "cmp-016", part_id: "prt-009", model_id: "mod-navara", variant_id: "var-nav-pro4x", year_id: "yr-nav-2024", notes: "Pro-4X 4x4 front axle", active: true },
   { id: "cmp-017", part_id: "prt-009", model_id: "mod-navara", variant_id: "var-nav-vl-4x4", year_id: "yr-nav-2024", notes: "VL 4x4 front axle", active: true },
+  { id: "cmp-020", part_id: "prt-009", model_id: "mod-navara", variant_id: "var-nav-pro4x", year_id: "yr-nav-2025", notes: "Pro-4X 4x4 front axle", active: true },
 
   // Kicks Hybrid Brake Pads (D1060-5RB0A)
   { id: "cmp-018", part_id: "prt-010", model_id: "mod-kicks", variant_id: "var-kicks-vl", year_id: "yr-kicks-2024", notes: "e-POWER VL hybrid front", active: true },
@@ -349,3 +352,80 @@ export const PART_COMPATIBILITY_DATA: PartCompatibilityEntity[] = [
   // Urvan Fleet Brake Pads (AY040-NS120)
   { id: "cmp-019", part_id: "prt-011", model_id: "mod-urvan", variant_id: "var-urvan-nv350", year_id: "yr-urvan-2024", notes: "Urvan NV350 front axle", active: true },
 ];
+
+// 6. INITIAL INQUIRIES & TRANSACTIONS (Section 12 DEMO DATA)
+export const INQUIRIES_DATA: PartInquiryEntity[] = [
+  {
+    id: "inq-001",
+    transaction_ref: "TXN-NISSAN-1001",
+    part_id: "prt-001",
+    part_number: "D1060-4JA0A",
+    part_description: "Front Disc Brake Pad Set (OEM Semi-Metallic)",
+    vehicle_summary: "Nissan Navara • 2.5L Diesel 4x4 MT (2024)",
+    customer_name: "Carlos Mendoza",
+    customer_phone: "+63 917 555 0192",
+    customer_email: "carlos.mendoza@example.com",
+    quantity: 1,
+    vin_plate: "NCB-4081",
+    notes: "Need expedited delivery to Cebu dealership counter.",
+    status: "quoted",
+    created_at: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    id: "inq-002",
+    transaction_ref: "TXN-NISSAN-1002",
+    part_id: "prt-003",
+    part_number: "15208-65F0A",
+    part_description: "Genuine Engine Oil Filter Cartridge",
+    vehicle_summary: "Nissan Terra • 2.5L 4x4 VL (2024)",
+    customer_name: "Elena Santos",
+    customer_phone: "+63 920 888 4421",
+    customer_email: "elena.s@example.com",
+    quantity: 3,
+    vin_plate: "EAA-9122",
+    notes: "Routine 10,000 km PMS replacement parts.",
+    status: "pending",
+    created_at: new Date(Date.now() - 3600000).toISOString(),
+  },
+];
+
+// 7. DEALERSHIP STAFF USERS & RBAC (Section 12 DEMO DATA)
+export const STAFF_USERS_DATA: StaffUserEntity[] = [
+  {
+    id: "usr-admin-01",
+    username: "admin",
+    email: "admin@nissan-dealer.ph",
+    full_name: "Dealership Parts Director",
+    role: "admin",
+    department: "Executive & Inventory Control",
+    password_hash: "nissan2024",
+    active: true,
+    last_login: new Date().toISOString(),
+    created_at: new Date(Date.now() - 30 * 86400000).toISOString(),
+  },
+  {
+    id: "usr-clerk-01",
+    username: "clerk",
+    email: "carlos.clerk@nissan-dealer.ph",
+    full_name: "Carlos Mendoza",
+    role: "counter_clerk",
+    department: "Parts Counter Sales",
+    password_hash: "nissan2024",
+    active: true,
+    last_login: new Date(Date.now() - 2 * 3600000).toISOString(),
+    created_at: new Date(Date.now() - 15 * 86400000).toISOString(),
+  },
+  {
+    id: "usr-advisor-01",
+    username: "advisor",
+    email: "elena.advisor@nissan-dealer.ph",
+    full_name: "Elena Santos",
+    role: "service_advisor",
+    department: "Service Workshop & Diagnostics",
+    password_hash: "nissan2024",
+    active: true,
+    last_login: new Date(Date.now() - 5 * 3600000).toISOString(),
+    created_at: new Date(Date.now() - 10 * 86400000).toISOString(),
+  },
+];
+

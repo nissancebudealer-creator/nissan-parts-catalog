@@ -15,6 +15,7 @@ import {
   Info,
   ExternalLink,
   Wrench,
+  Send,
 } from "lucide-react";
 import { PartCatalogItem } from "@/types/catalog";
 
@@ -22,12 +23,14 @@ interface PartDetailModalProps {
   part: PartCatalogItem | null;
   isOpen: boolean;
   onClose: () => void;
+  onRequestQuote?: (part: PartCatalogItem) => void;
 }
 
 export const PartDetailModal: React.FC<PartDetailModalProps> = ({
   part,
   isOpen,
   onClose,
+  onRequestQuote,
 }) => {
   const [copied, setCopied] = React.useState(false);
 
@@ -207,13 +210,26 @@ export const PartDetailModal: React.FC<PartDetailModalProps> = ({
             Press <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">Esc</kbd> or click outside to return
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs font-bold text-slate-200 hover:text-white bg-slate-800 hover:bg-slate-700 transition-colors border border-slate-700 active:scale-95"
-          >
-            Back to Search Results
-          </button>
+          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition-colors border border-slate-700 active:scale-95"
+            >
+              Back
+            </button>
+
+            {onRequestQuote && (
+              <button
+                type="button"
+                onClick={() => onRequestQuote(part)}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 transition-all shadow-md shadow-red-950/40 active:scale-95"
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>Request Quote / Order Part</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

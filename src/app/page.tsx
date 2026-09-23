@@ -7,6 +7,8 @@ import { VehicleSelector } from "@/components/VehicleSelector";
 import { PartsSearch } from "@/components/PartsSearch";
 import { SearchResults } from "@/components/SearchResults";
 import { PartDetailModal } from "@/components/PartDetailModal";
+import { QuoteRequestModal } from "@/components/QuoteRequestModal";
+import { TrackOrderModal } from "@/components/TrackOrderModal";
 import { DataImportModal } from "@/components/DataImportModal";
 import {
   VehicleModelEntity,
@@ -49,6 +51,13 @@ export default function HomePage() {
   const [selectedPartForModal, setSelectedPartForModal] = useState<PartCatalogItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  // Quote Request & Order Transaction State (Phase 10)
+  const [selectedPartForQuote, setSelectedPartForQuote] = useState<PartCatalogItem | null>(null);
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState<boolean>(false);
+
+  // Track Order / Reservation State
+  const [isTrackOrderOpen, setIsTrackOrderOpen] = useState<boolean>(false);
+
   // Data Import Modal State (Phase 6)
   const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
 
@@ -65,6 +74,8 @@ export default function HomePage() {
     setHasSearched(false);
     setSelectedPartForModal(null);
     setIsModalOpen(false);
+    setSelectedPartForQuote(null);
+    setIsQuoteModalOpen(false);
     setIsImportModalOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -106,12 +117,23 @@ export default function HomePage() {
     setIsModalOpen(false);
   };
 
+  const handleOpenQuoteModal = (part: PartCatalogItem) => {
+    setIsModalOpen(false); // Close details modal to focus on quote transaction
+    setSelectedPartForQuote(part);
+    setIsQuoteModalOpen(true);
+  };
+
+  const handleCloseQuoteModal = () => {
+    setIsQuoteModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-red-600 selection:text-white">
       {/* Navigation Header with Reset & CSV Import */}
       <Header
         onReset={handleResetAll}
         onOpenImport={() => setIsImportModalOpen(true)}
+        onOpenTrackOrder={() => setIsTrackOrderOpen(true)}
       />
 
       {/* Main Content */}
@@ -254,6 +276,25 @@ export default function HomePage() {
         part={selectedPartForModal}
         isOpen={isModalOpen}
         onClose={handleClosePartModal}
+        onRequestQuote={handleOpenQuoteModal}
+      />
+
+      {/* Quote Request & Order Transaction Modal (Phase 10) */}
+      <QuoteRequestModal
+        part={selectedPartForQuote}
+        isOpen={isQuoteModalOpen}
+        onClose={handleCloseQuoteModal}
+        vehicleSummary={
+          selectedModel && selectedVariant && selectedYear
+            ? `Nissan ${selectedModel.model_name} • ${selectedVariant.variant_name} (${selectedYear.year})`
+            : undefined
+        }
+      />
+
+      {/* Track Reservation & Order Status Modal */}
+      <TrackOrderModal
+        isOpen={isTrackOrderOpen}
+        onClose={() => setIsTrackOrderOpen(false)}
       />
 
       {/* Data Import Modal (Phase 6) */}

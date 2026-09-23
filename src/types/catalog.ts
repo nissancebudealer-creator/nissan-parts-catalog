@@ -100,3 +100,87 @@ export interface StepGuide {
   description: string;
   iconName: string;
 }
+
+// ==========================================
+// Customer Transaction & Inquiry Entities
+// ==========================================
+
+export type InquiryStatus = "pending" | "quoted" | "completed" | "cancelled";
+
+export interface PartInquiryEntity {
+  id: string;
+  transaction_ref: string;
+  part_id: string;
+  part_number: string;
+  part_description: string;
+  vehicle_summary: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_email?: string;
+  quantity: number;
+  vin_plate?: string;
+  notes?: string;
+  status: InquiryStatus;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface CreateInquiryDTO {
+  part_id?: string;
+  part_number: string;
+  part_description: string;
+  vehicle_summary: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_email?: string;
+  quantity: number;
+  vin_plate?: string;
+  notes?: string;
+}
+
+// ==========================================
+// Staff & Role-Based Access Control (RBAC)
+// ==========================================
+
+export type StaffRole = "admin" | "counter_clerk" | "service_advisor";
+
+export interface StaffUserEntity {
+  id: string;
+  username: string;
+  email: string;
+  full_name: string;
+  role: StaffRole;
+  department: string;
+  password_hash: string;
+  active: boolean;
+  last_login?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
+export type StaffUserPublic = Omit<StaffUserEntity, "password_hash">;
+
+export interface LoginCredentialsDTO {
+  username: string;
+  password?: string;
+}
+
+export interface CreateStaffUserDTO {
+  username: string;
+  email: string;
+  full_name: string;
+  role: StaffRole;
+  department?: string;
+  password?: string;
+}
+
+export interface UpdateStaffUserDTO {
+  id: string;
+  email?: string;
+  full_name?: string;
+  role?: StaffRole;
+  department?: string;
+  active?: boolean;
+  password?: string;
+}
+

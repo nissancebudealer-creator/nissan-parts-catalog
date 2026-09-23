@@ -1,14 +1,16 @@
 "use client";
 
 import React from "react";
-import { Wrench, ShieldCheck, RefreshCw, Car, Upload } from "lucide-react";
+import Link from "next/link";
+import { Wrench, ShieldCheck, RefreshCw, Car, Upload, Lock, Search } from "lucide-react";
 
 interface HeaderProps {
   onReset: () => void;
   onOpenImport?: () => void;
+  onOpenTrackOrder?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onReset, onOpenImport }) => {
+export const Header: React.FC<HeaderProps> = ({ onReset, onOpenImport, onOpenTrackOrder }) => {
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-slate-950/90 border-b border-slate-800/80 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -56,6 +58,18 @@ export const Header: React.FC<HeaderProps> = ({ onReset, onOpenImport }) => {
               </button>
             )}
 
+            {onOpenTrackOrder && (
+              <button
+                type="button"
+                onClick={onOpenTrackOrder}
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-emerald-300 hover:text-white bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-800/60 rounded-lg transition-all shadow-sm active:scale-95 cursor-pointer"
+                title="Track existing parts reservation"
+              >
+                <Search className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="hidden sm:inline">Track Reservation</span>
+              </button>
+            )}
+
             <button
               onClick={onReset}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-700/80 rounded-lg transition-all shadow-sm active:scale-95"
@@ -64,6 +78,15 @@ export const Header: React.FC<HeaderProps> = ({ onReset, onOpenImport }) => {
               <RefreshCw className="w-3.5 h-3.5 text-slate-400" />
               <span className="hidden sm:inline">Reset Form</span>
             </button>
+
+            <Link
+              href="/admin"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-red-300 hover:text-white bg-red-950/40 hover:bg-red-900/60 border border-red-800/60 rounded-lg transition-all shadow-sm active:scale-95"
+              title="Dealership Administration & Counter Portal"
+            >
+              <Lock className="w-3.5 h-3.5 text-red-400" />
+              <span className="hidden sm:inline">Admin Portal</span>
+            </Link>
           </div>
         </div>
       </div>
