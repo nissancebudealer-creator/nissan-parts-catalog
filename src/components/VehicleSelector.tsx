@@ -28,6 +28,17 @@ interface VehicleSelectorProps {
   onClear: () => void;
 }
 
+const DEFAULT_NISSAN_MODELS: VehicleModelEntity[] = [
+  { id: "mod-navara", model_name: "Navara", model_code: "D23", active: true },
+  { id: "mod-terra", model_name: "Terra", model_code: "D23T", active: true },
+  { id: "mod-almera", model_name: "Almera", model_code: "N18", active: true },
+  { id: "mod-kicks", model_name: "Kicks e-POWER", model_code: "P15", active: true },
+  { id: "mod-xtrail", model_name: "X-Trail", model_code: "T33", active: true },
+  { id: "mod-livina", model_name: "Livina", model_code: "ND", active: true },
+  { id: "mod-patrol", model_name: "Patrol", model_code: "Y62", active: true },
+  { id: "mod-urvan", model_name: "Urvan NV350", model_code: "E26", active: true },
+];
+
 export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
   selectedModel,
   selectedVariant,
@@ -37,13 +48,13 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
   onYearChange,
   onClear,
 }) => {
-  // State for dynamic options from database API
-  const [models, setModels] = useState<VehicleModelEntity[]>([]);
+  // State for dynamic options from database API (initialized with standard Nissan lineup)
+  const [models, setModels] = useState<VehicleModelEntity[]>(DEFAULT_NISSAN_MODELS);
   const [variants, setVariants] = useState<VehicleVariantEntity[]>([]);
   const [years, setYears] = useState<VehicleYearEntity[]>([]);
 
   // Loading states
-  const [loadingModels, setLoadingModels] = useState<boolean>(true);
+  const [loadingModels, setLoadingModels] = useState<boolean>(false);
   const [loadingVariants, setLoadingVariants] = useState<boolean>(false);
   const [loadingYears, setLoadingYears] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -52,8 +63,6 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
   useEffect(() => {
     let isMounted = true;
     async function loadModels() {
-      setLoadingModels(true);
-      setErrorMessage(null);
       try {
         const res = await fetch("/api/catalog/models");
         if (!res.ok) throw new Error("Failed to load vehicle models");
