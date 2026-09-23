@@ -22,6 +22,7 @@ A high-performance, mobile-responsive automotive parts lookup web application bu
 - **Styling**: Tailwind CSS, Lucide Icons
 - **Database**: PostgreSQL / Supabase
 - **Hosting**: Vercel
+- **Live Production App**: [https://nissan-parts-finder-app.vercel.app](https://nissan-parts-finder-app.vercel.app)
 
 ---
 
